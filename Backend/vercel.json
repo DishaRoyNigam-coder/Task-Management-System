@@ -10,12 +10,7 @@
     {
       "src": "/(.*)",
       "dest": "api/index.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "https://task-management-system-st2m.vercel.app",
-        "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        "Access-Control-Allow-Credentials": "true"
-      }
+      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
     }
   ]
 }

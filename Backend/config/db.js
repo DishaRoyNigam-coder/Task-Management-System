@@ -1,13 +1,25 @@
+// backend/config/db.js
 const mongoose = require('mongoose');
 
-const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-  } catch (error) {
-    console.error(`❌ DB Error: ${error.message}`);
-    process.exit(1);
+let cached = global.mongoose;
+if (!cached) cached = global.mongoose = { conn: null, promise: null };
+
+async function connectDB() {
+  if (cached.conn) return cached.conn;
+
+  if (!cached.promise) {
+    if (!process.env.MONGO_URI) {
+      throw new Error('MONGO_URI not set in environment variables');
+    }
+    cached.promise = mongoose
+      .connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: 10000 })
+      .then((m) => {
+        console.log('✅ MongoDB connected');
+        return m;
+      });
   }
-};
+  cached.conn = await cached.promise;
+  return cached.conn;
+}
 
 module.exports = connectDB;
